@@ -28,7 +28,7 @@ int setupShader();
 int setupGeometry();
 
 // Dimensões da janela (pode ser alterado em tempo de execução)
-const GLuint WIDTH = 800, HEIGHT = 600;
+const GLuint WIDTH = 800, HEIGHT = 800;
 
 // Código fonte do Vertex Shader (em GLSL): ainda hardcoded
 const GLchar* vertexShaderSource = "#version 400\n"
@@ -123,11 +123,11 @@ int main()
 
 		glBindVertexArray(VAO); //Conectando ao buffer de geometria
 
-		glUniform4f(colorLoc, 0.0f, 0.0f, 1.0f, 1.0f); //enviando cor para variável uniform inputColor
+		glUniform4f(colorLoc, 0.0f, 1.0f, 1.0f, 1.0f); //enviando cor para variável uniform inputColor
 
 		// Chamada de desenho - drawcall
 		// Poligono Preenchido - GL_TRIANGLES
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
 
 		glBindVertexArray(0); //Desconectando o buffer de geometria
 
@@ -212,11 +212,13 @@ int setupGeometry()
 	GLfloat vertices[] = {
 		//x   y     z
 		//T0
-		-0.5, -0.5, 0.0, //v0
-		 0.5, -0.5, 0.0, //v1
- 		 0.0,  0.5, 0.0, //v2
+		-0.9,	0.05,	0.0, //v0
+		-0.05,	0.9, 	0.0, //v1
+		-0.05, 	0.05, 	0.0, //v2
 		//T1
-			  
+		0.05, 	-0.05, 	0.0, //v0
+		0.9,  	-0.05, 	0.0, //v1
+		0.05,  	-0.9, 	0.0, //v2  	
 	};
 
 	GLuint VBO, VAO;
