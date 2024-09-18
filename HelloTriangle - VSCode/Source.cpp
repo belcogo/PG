@@ -19,6 +19,12 @@ using namespace std;
 // GLFW
 #include <GLFW/glfw3.h>
 
+// GLM
+#include <glm/glm.hpp> 
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+using namespace glm;
 
 // Protótipo da função de callback de teclado
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
@@ -28,15 +34,16 @@ int setupShader();
 int setupGeometry();
 
 // Dimensões da janela (pode ser alterado em tempo de execução)
-const GLuint WIDTH = 800, HEIGHT = 800;
+const GLuint WIDTH = 800, HEIGHT = 600;
 
 // Código fonte do Vertex Shader (em GLSL): ainda hardcoded
 const GLchar* vertexShaderSource = "#version 400\n"
 "layout (location = 0) in vec3 position;\n"
+"uniform mat4 projection;\n"
 "void main()\n"
 "{\n"
 //...pode ter mais linhas de código aqui!
-"gl_Position = vec4(position.x, position.y, position.z, 1.0);\n"
+"gl_Position = projection * vec4(position.x, position.y, position.z, 1.0);\n"
 "}\0";
 
 //Códifo fonte do Fragment Shader (em GLSL): ainda hardcoded
@@ -68,7 +75,7 @@ int main()
 //#endif
 
 	// Criação da janela GLFW
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Ola Triangulo! -- Bel", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Ola Triangulo! -- Rossana", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 
 	// Fazendo o registro da função de callback para a janela GLFW
@@ -78,7 +85,6 @@ int main()
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
 		std::cout << "Failed to initialize GLAD" << std::endl;
-
 	}
 
 	// Obtendo as informações de versão
@@ -99,15 +105,18 @@ int main()
 	// Gerando um buffer simples, com a geometria de um triângulo
 	GLuint VAO = setupGeometry();
 	
+	glUseProgram(shaderID);
 
 	// Enviando a cor desejada (vec4) para o fragment shader
 	// Utilizamos a variáveis do tipo uniform em GLSL para armazenar esse tipo de info
 	// que não está nos buffers
 	GLint colorLoc = glGetUniformLocation(shaderID, "inputColor");
-	
-	glUseProgram(shaderID);
-	
 
+	mat4 projection = ortho(-10.0f,10.0f,-10.0f,10.0f,-1.0f,1.0f);
+
+	glUniformMatrix4fv(glGetUniformLocation(shaderID, "projection"), 1, GL_FALSE, value_ptr(projection));
+
+	
 	// Loop da aplicação - "game loop"
 	while (!glfwWindowShouldClose(window))
 	{
@@ -123,11 +132,11 @@ int main()
 
 		glBindVertexArray(VAO); //Conectando ao buffer de geometria
 
-		glUniform4f(colorLoc, 0.0f, 1.0f, 1.0f, 1.0f); //enviando cor para variável uniform inputColor
+		glUniform4f(colorLoc, 1.0f, 0.0f, 1.0f, 1.0f); //enviando cor para variável uniform inputColor
 
 		// Chamada de desenho - drawcall
 		// Poligono Preenchido - GL_TRIANGLES
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		glBindVertexArray(0); //Desconectando o buffer de geometria
 
@@ -212,13 +221,11 @@ int setupGeometry()
 	GLfloat vertices[] = {
 		//x   y     z
 		//T0
-		-0.9,	0.05,	0.0, //v0
-		-0.05,	0.9, 	0.0, //v1
-		-0.05, 	0.05, 	0.0, //v2
+		-0.5, -0.5, 0.0, //v0
+		 0.5, -0.5, 0.0, //v1
+ 		 0.0,  0.5, 0.0, //v2
 		//T1
-		0.05, 	-0.05, 	0.0, //v0
-		0.9,  	-0.05, 	0.0, //v1
-		0.05,  	-0.9, 	0.0, //v2  	
+			  
 	};
 
 	GLuint VBO, VAO;
@@ -253,4 +260,3 @@ int setupGeometry()
 
 	return VAO;
 }
-
