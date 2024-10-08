@@ -114,7 +114,7 @@ int main()
 
 	//Exercicio 2
 	//mat4 projection = ortho(-10.0f,10.0f,-10.0f,10.0f,-1.0f,1.0f);
-	mat4 projection = ortho(-10.0f,10.0f,-10.0f,10.0f,-1.0f,1.0f);
+	mat4 projection = ortho(0.0f,800.0f,600.0f,0.0f,-1.0f,1.0f);
 
 	glUniformMatrix4fv(glGetUniformLocation(shaderID, "projection"), 1, GL_FALSE, value_ptr(projection));
 
@@ -220,22 +220,12 @@ int setupGeometry()
 	// sequencial, já visando mandar para o VBO (Vertex Buffer Objects)
 	// Cada atributo do vértice (coordenada, cores, coordenadas de textura, normal, etc)
 	// Pode ser arazenado em um VBO único ou em VBOs separados
-	// GLfloat vertices[] = {
-	// 	//x   y     z
-	// 	//T0
-	// 	-0.5, -0.5 * 300 + 300, 0.0, //v0
-	// 	 0.5, -0.5 * 300 + 300, 0.0, //v1
- 	// 	 0.0,  0.5 * 300 + 300, 0.0, //v2
-	// 	//T1
-			  
-	// };
-
-  GLfloat vertices[] = {
+	GLfloat vertices[] = {
 		//x   y     z
 		//T0
-		-0.5, -0.5, 0.0, //v0
-		 0.5, -0.5, 0.0, //v1
- 		 0.0,  0.5, 0.0, //v2
+		-0.5 * 300 + 400, -0.5 * 300 + 300, 0.0, //v0
+		 0.5 * 300 + 400, -0.5 * 300 + 300, 0.0, //v1
+ 		 0.0 * 300 + 400,  0.5 * 300 + 300, 0.0, //v2
 		//T1
 			  
 	};

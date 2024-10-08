@@ -40,10 +40,11 @@ const GLuint WIDTH = 800, HEIGHT = 600;
 const GLchar* vertexShaderSource = "#version 400\n"
 "layout (location = 0) in vec3 position;\n"
 "uniform mat4 projection;\n"
+"uniform mat4 model;\n"
 "void main()\n"
 "{\n"
 //...pode ter mais linhas de código aqui!
-"gl_Position = projection * vec4(position.x, position.y, position.z, 1.0);\n"
+"gl_Position = projection * model * vec4(position.x, position.y, position.z, 1.0);\n"
 "}\0";
 
 //Códifo fonte do Fragment Shader (em GLSL): ainda hardcoded
@@ -75,7 +76,7 @@ int main()
 //#endif
 
 	// Criação da janela GLFW
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Ola Triangulo! -- Bel Cogo", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Ola Triangulo! -- Bel", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 
 	// Fazendo o registro da função de callback para a janela GLFW
@@ -114,9 +115,19 @@ int main()
 
 	//Exercicio 2
 	//mat4 projection = ortho(-10.0f,10.0f,-10.0f,10.0f,-1.0f,1.0f);
-	mat4 projection = ortho(-10.0f,10.0f,-10.0f,10.0f,-1.0f,1.0f);
+	mat4 projection = ortho(0.0f,800.0f,0.0f,600.0f,-0.5f,0.5f);
 
 	glUniformMatrix4fv(glGetUniformLocation(shaderID, "projection"), 1, GL_FALSE, value_ptr(projection));
+
+  mat4 model = mat4(1); // matriz identidade
+	
+	// Translação
+	model = translate(model, vec3(400.0, 300.0, 0.0));
+
+	// Escala
+	model = scale(model, vec3(300.0, 300.0, 1.0));
+
+  glUniformMatrix4fv(glGetUniformLocation(shaderID, "model"), 1, GL_FALSE, value_ptr(model));
 
 	
 	// Loop da aplicação - "game loop"
@@ -138,6 +149,7 @@ int main()
 
 		// Chamada de desenho - drawcall
 		// Poligono Preenchido - GL_TRIANGLES
+    glViewport(width / 2, height / 2, width / 2, height / 2);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		glBindVertexArray(0); //Desconectando o buffer de geometria
@@ -220,17 +232,7 @@ int setupGeometry()
 	// sequencial, já visando mandar para o VBO (Vertex Buffer Objects)
 	// Cada atributo do vértice (coordenada, cores, coordenadas de textura, normal, etc)
 	// Pode ser arazenado em um VBO único ou em VBOs separados
-	// GLfloat vertices[] = {
-	// 	//x   y     z
-	// 	//T0
-	// 	-0.5, -0.5 * 300 + 300, 0.0, //v0
-	// 	 0.5, -0.5 * 300 + 300, 0.0, //v1
- 	// 	 0.0,  0.5 * 300 + 300, 0.0, //v2
-	// 	//T1
-			  
-	// };
-
-  GLfloat vertices[] = {
+	GLfloat vertices[] = {
 		//x   y     z
 		//T0
 		-0.5, -0.5, 0.0, //v0
